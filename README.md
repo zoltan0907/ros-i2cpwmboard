@@ -1,3 +1,6 @@
+**NOTE:** This project is no longer actively maintained. If you are interested in taking over maintenace, submit a request and I will be happy to add you as a maintainer.
+
+
 ros-i2cpwmboard is the project for the i2cpwm_board controller node.
 
 The user documentation is available at: http://bradanlane.gitlab.io/ros-i2cpwmboard/
