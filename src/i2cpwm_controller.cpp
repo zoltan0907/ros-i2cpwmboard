@@ -401,20 +401,22 @@ static float _convert_mps_to_proportional (float speed)
  */
 static void _set_pwm_frequency (int freq)
 {
-    int prescale;
+    unsigned char prescale;
     char oldmode, newmode;
     int res;
 
     _pwm_frequency = freq;   // save to global
     
 	ROS_DEBUG("_set_pwm_frequency prescale");
-    float prescaleval = 25000000.0; // 25MHz
-    prescaleval /= 4096.0;
-    prescaleval /= (float)freq;
-    prescaleval -= 1.0;
-    //ROS_INFO("Estimated pre-scale: %6.4f", prescaleval);
-    prescale = floor(prescaleval + 0.5);
-    // ROS_INFO("Final pre-scale: %d", prescale);
+//    float prescaleval = 25000000.0; // 25MHz
+//    prescaleval /= 4096.0;
+//    prescaleval /= (float)freq;
+//    prescaleval -= 1.0;
+//    //ROS_INFO("Estimated pre-scale: %6.4f", prescaleval);
+//    prescale = floor(prescaleval + 0.5);
+//    // ROS_INFO("Final pre-scale: %d", prescale);
+
+	prescale = (unsigned char)(25000000.0f / (4096.0f * freq) - 0.5f);
 
 
 	ROS_INFO("Setting PWM frequency to %d Hz", freq);
@@ -428,7 +430,7 @@ static void _set_pwm_frequency (int freq)
     if (0 > i2c_smbus_write_byte_data (_controller_io_handle, __MODE1, newmode)) // go to sleep
         ROS_ERROR("Unable to set PWM controller to sleep mode"); 
 
-    if (0 >  i2c_smbus_write_byte_data(_controller_io_handle, __PRESCALE, (int)(floor(prescale))))
+    if (0 >  i2c_smbus_write_byte_data(_controller_io_handle, __PRESCALE, prescale))
         ROS_ERROR("Unable to set PWM controller prescale"); 
 
     if (0 > i2c_smbus_write_byte_data(_controller_io_handle, __MODE1, oldmode))
